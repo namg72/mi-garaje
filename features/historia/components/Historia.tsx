@@ -2,6 +2,6 @@
 
 import React from "react";
 
-export const Historial = () => {
+export const Historia = () => {
   return <div>Hola desde Historial</div>;
 };
