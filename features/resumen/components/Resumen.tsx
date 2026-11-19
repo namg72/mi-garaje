@@ -1,6 +1,7 @@
 "use Client";
 
 import { Button } from "@/components/ui/button";
+import { ModalCrearVehiculo } from "@/features/vehiculos/components/ModalCrearVehiculo";
 import { VehiculoCard } from "@/features/vehiculos/components/VehiculoCard";
 import { Vehiculo } from "@/features/vehiculos/types/Vehiculo";
 
@@ -16,7 +17,7 @@ export const Resumen = ({ vehiculos }: ResumenProps) => {
           <p className="text-xl font-bold">Resumen</p>
         </div>
         <div>
-          <Button> Añadir Vehículo</Button>
+          <ModalCrearVehiculo />
         </div>
       </div>
       <div className=" p-8 grid grid-cols-2 gap-6">
