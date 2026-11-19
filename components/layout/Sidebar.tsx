@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  CarIcon,
   ClipboardTextIcon,
   FileTextIcon,
   HouseIcon,
@@ -24,19 +23,6 @@ export const Sidebar = () => {
         >
           <HouseIcon size={32} />
           <Link href="/">Resumen</Link>
-        </li>
-
-        <li
-          aria-current={rutaActual === "/vehiculos" ? "page" : undefined}
-          className={`flex items-center gap-3 rounded-xl px-4 py-3 text-base font-medium hover:bg-sidebar-hover ${
-            rutaActual === "/vehiculos"
-              ? "bg-sidebar-accent text-sidebar-accent-foreground"
-              : "text-sidebar-foreground hover:bg-sidebar-hover"
-          }`}
-        >
-          <CarIcon size={32} />
-
-          <Link href="/vehiculos">Vehículos</Link>
         </li>
 
         <li

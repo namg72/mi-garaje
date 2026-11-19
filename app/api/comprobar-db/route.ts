@@ -1,5 +1,5 @@
 import { conexionDB } from "@/server/database/conexion";
-import { Vehiculo } from "@/server/models/Vehiculo";
+import { VehiculoModelo } from "@/server/models/Vehiculo";
 
 /* export const GET = async () => {
   try {
@@ -21,7 +21,7 @@ import { Vehiculo } from "@/server/models/Vehiculo";
  */
 export async function GET() {
   try {
-    const vehiculos = await Vehiculo.findAll();
+    const vehiculos = await VehiculoModelo.findAll();
 
     return Response.json(vehiculos);
   } catch (error) {

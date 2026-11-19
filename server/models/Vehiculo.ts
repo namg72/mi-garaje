@@ -7,9 +7,9 @@ import {
 } from "sequelize";
 import { conexionDB } from "../database/conexion";
 
-export class Vehiculo extends Model<
-  InferAttributes<Vehiculo>,
-  InferCreationAttributes<Vehiculo>
+export class VehiculoModelo extends Model<
+  InferAttributes<VehiculoModelo>,
+  InferCreationAttributes<VehiculoModelo>
 > {
   declare id: CreationOptional<number>;
   declare marca: string;
@@ -20,9 +20,10 @@ export class Vehiculo extends Model<
   declare bastidor: string | null;
   declare fechaPrimeraMatriculacion: string | null;
   declare observaciones: string | null;
+  declare foto: string | null;
 }
 
-Vehiculo.init(
+VehiculoModelo.init(
   {
     id: {
       type: DataTypes.INTEGER,
@@ -59,6 +60,10 @@ Vehiculo.init(
       allowNull: true,
     },
     observaciones: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+    foto: {
       type: DataTypes.TEXT,
       allowNull: true,
     },
