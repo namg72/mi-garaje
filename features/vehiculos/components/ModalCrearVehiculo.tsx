@@ -13,16 +13,25 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ImageIcon } from "@phosphor-icons/react";
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { crearVehiculoSchema } from "../valiaciones/crearVehiculoSchema";
+import { CrearVehiculoDatos } from "../types/Vehiculo";
+import { useRouter } from "next/navigation";
 
 export const ModalCrearVehiculo = () => {
+  const [abierto, setAbierto] = useState(false);
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
-  } = useForm<z.input<typeof crearVehiculoSchema>, unknown, z.output<typeof crearVehiculoSchema>>({
+  } = useForm<
+    z.input<typeof crearVehiculoSchema>,
+    unknown,
+    z.output<typeof crearVehiculoSchema>
+  >({
     resolver: zodResolver(crearVehiculoSchema),
     defaultValues: {
       marca: "",
@@ -35,8 +44,36 @@ export const ModalCrearVehiculo = () => {
       observaciones: "",
     },
   });
+  const router = useRouter();
+
+  const handleAddVehiculo = async (vehiculo: CrearVehiculoDatos) => {
+    console.log(vehiculo, 4444444444444);
+    if (vehiculo) {
+      const respuesta = await fetch("/api/vehiculos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(vehiculo),
+      });
+      if (!respuesta.ok) {
+        throw new Error("No se ha podidao guardar el vehiculo");
+      }
+
+      reset();
+      setAbierto(false);
+      router.refresh();
+    }
+  };
+
   return (
-    <Dialog>
+    <Dialog
+      open={abierto}
+      onOpenChange={(nuevoEstado) => {
+        setAbierto(nuevoEstado);
+        if (!nuevoEstado) reset();
+      }}
+    >
       <DialogTrigger
         render={<Button className="shadow-card hover:bg-primary-hover" />}
       >
@@ -48,7 +85,12 @@ export const ModalCrearVehiculo = () => {
             Añadir vehículo
           </DialogTitle>
         </DialogHeader>
-        <form noValidate onSubmit={handleSubmit((datos) => console.log(datos))}>
+        <form
+          noValidate
+          onSubmit={handleSubmit((datos) => {
+            handleAddVehiculo(datos);
+          })}
+        >
           <div className="grid gap-8 p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_220px]">
             <div className="grid grid-cols-1 items-start gap-x-6 gap-y-5 sm:grid-cols-2">
               <div className="grid gap-2">
@@ -71,7 +113,11 @@ export const ModalCrearVehiculo = () => {
                   placeholder="Ej. Audi"
                 />
                 {errors.marca && (
-                  <p id="marca-error" role="alert" className="text-sm text-destructive">
+                  <p
+                    id="marca-error"
+                    role="alert"
+                    className="text-sm text-destructive"
+                  >
                     {errors.marca.message}
                   </p>
                 )}
@@ -96,7 +142,11 @@ export const ModalCrearVehiculo = () => {
                   placeholder="Modelo"
                 />
                 {errors.modelo && (
-                  <p id="modelo-error" role="alert" className="text-sm text-destructive">
+                  <p
+                    id="modelo-error"
+                    role="alert"
+                    className="text-sm text-destructive"
+                  >
                     {errors.modelo.message}
                   </p>
                 )}
@@ -115,13 +165,19 @@ export const ModalCrearVehiculo = () => {
                   className="h-11 bg-card"
                   id="matricula"
                   aria-invalid={Boolean(errors.matricula)}
-                  aria-describedby={errors.matricula ? "matricula-error" : undefined}
+                  aria-describedby={
+                    errors.matricula ? "matricula-error" : undefined
+                  }
                   {...register("matricula")}
                   required
                   placeholder="Matrícula"
                 />
                 {errors.matricula && (
-                  <p id="matricula-error" role="alert" className="text-sm text-destructive">
+                  <p
+                    id="matricula-error"
+                    role="alert"
+                    className="text-sm text-destructive"
+                  >
                     {errors.matricula.message}
                   </p>
                 )}
@@ -145,7 +201,11 @@ export const ModalCrearVehiculo = () => {
                   placeholder="Ej. 45000"
                 />
                 {errors.km && (
-                  <p id="km-error" role="alert" className="text-sm text-destructive">
+                  <p
+                    id="km-error"
+                    role="alert"
+                    className="text-sm text-destructive"
+                  >
                     {errors.km.message}
                   </p>
                 )}
@@ -161,12 +221,18 @@ export const ModalCrearVehiculo = () => {
                   className="h-11 bg-card"
                   id="bastidor"
                   aria-invalid={Boolean(errors.bastidor)}
-                  aria-describedby={errors.bastidor ? "bastidor-error" : undefined}
+                  aria-describedby={
+                    errors.bastidor ? "bastidor-error" : undefined
+                  }
                   placeholder="Nº de bastidor"
                   {...register("bastidor")}
                 />
                 {errors.bastidor && (
-                  <p id="bastidor-error" role="alert" className="text-sm text-destructive">
+                  <p
+                    id="bastidor-error"
+                    role="alert"
+                    className="text-sm text-destructive"
+                  >
                     {errors.bastidor.message}
                   </p>
                 )}
@@ -182,12 +248,20 @@ export const ModalCrearVehiculo = () => {
                   className="h-11 bg-card"
                   id="fechaPrimeraMatriculacion"
                   aria-invalid={Boolean(errors.fechaPrimeraMatriculacion)}
-                  aria-describedby={errors.fechaPrimeraMatriculacion ? "fechaPrimeraMatriculacion-error" : undefined}
+                  aria-describedby={
+                    errors.fechaPrimeraMatriculacion
+                      ? "fechaPrimeraMatriculacion-error"
+                      : undefined
+                  }
                   {...register("fechaPrimeraMatriculacion")}
                   type="date"
                 />
                 {errors.fechaPrimeraMatriculacion && (
-                  <p id="fechaPrimeraMatriculacion-error" role="alert" className="text-sm text-destructive">
+                  <p
+                    id="fechaPrimeraMatriculacion-error"
+                    role="alert"
+                    className="text-sm text-destructive"
+                  >
                     {errors.fechaPrimeraMatriculacion.message}
                   </p>
                 )}
@@ -203,12 +277,18 @@ export const ModalCrearVehiculo = () => {
                   className="h-11 bg-card"
                   id="fechaProximaITV"
                   aria-invalid={Boolean(errors.fechaProximaITV)}
-                  aria-describedby={errors.fechaProximaITV ? "fechaProximaITV-error" : undefined}
+                  aria-describedby={
+                    errors.fechaProximaITV ? "fechaProximaITV-error" : undefined
+                  }
                   {...register("fechaProximaITV")}
                   type="date"
                 />
                 {errors.fechaProximaITV && (
-                  <p id="fechaProximaITV-error" role="alert" className="text-sm text-destructive">
+                  <p
+                    id="fechaProximaITV-error"
+                    role="alert"
+                    className="text-sm text-destructive"
+                  >
                     {errors.fechaProximaITV.message}
                   </p>
                 )}
@@ -223,13 +303,19 @@ export const ModalCrearVehiculo = () => {
                 <textarea
                   id="observaciones"
                   aria-invalid={Boolean(errors.observaciones)}
-                  aria-describedby={errors.observaciones ? "observaciones-error" : undefined}
+                  aria-describedby={
+                    errors.observaciones ? "observaciones-error" : undefined
+                  }
                   {...register("observaciones")}
                   placeholder="Notas sobre el vehículo"
                   className="min-h-24 w-full resize-y rounded-lg border border-input bg-card aria-invalid:border-destructive px-3 py-2 text-sm outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
                 />
                 {errors.observaciones && (
-                  <p id="observaciones-error" role="alert" className="text-sm text-destructive">
+                  <p
+                    id="observaciones-error"
+                    role="alert"
+                    className="text-sm text-destructive"
+                  >
                     {errors.observaciones.message}
                   </p>
                 )}

@@ -6,6 +6,7 @@ export const crearVehiculoSchema = z.object({
   matricula: z
     .string()
     .trim()
+    .toUpperCase()
     .min(1, "La matrícula es obligatoria")
     .regex(/^[A-Z0-9]+$/, "La matrícula solo puede contener letras y números"),
 
@@ -13,10 +14,12 @@ export const crearVehiculoSchema = z.object({
     .string()
     .trim()
     .refine(
-      (valor) => valor === "" || (/^[0-9]+$/.test(valor) && Number.isSafeInteger(Number(valor))),
+      (valor) =>
+        valor === "" ||
+        (/^[0-9]+$/.test(valor) && Number.isSafeInteger(Number(valor))),
       { message: "El kilometraje debe ser un entero mayor o igual que cero" },
     )
-    .transform((valor) => valor === "" ? null : Number(valor)),
+    .transform((valor) => (valor === "" ? null : Number(valor))),
   fechaPrimeraMatriculacion: z
     .string()
     .refine(
@@ -25,15 +28,16 @@ export const crearVehiculoSchema = z.object({
         if (!/^\d{4}-\d{2}-\d{2}$/.test(valor)) return false;
 
         const fecha = new Date(`${valor}T00:00:00.000Z`);
-        return !Number.isNaN(fecha.getTime()) &&
-          fecha.toISOString().slice(0, 10) === valor;
+        return (
+          !Number.isNaN(fecha.getTime()) &&
+          fecha.toISOString().slice(0, 10) === valor
+        );
       },
       { message: "Introduce una fecha de matriculación válida" },
     )
-    .refine(
-      (valor) => valor === "" || valor >= "1900-01-01",
-      { message: "La matriculación no puede ser anterior a 1900" },
-    )
+    .refine((valor) => valor === "" || valor >= "1900-01-01", {
+      message: "La matriculación no puede ser anterior a 1900",
+    })
     .refine(
       (valor) => {
         if (valor === "") return true;
@@ -43,7 +47,8 @@ export const crearVehiculoSchema = z.object({
         return valor <= limite;
       },
       { message: "La matriculación no puede ser posterior a hoy" },
-    ),
+    )
+    .transform((valor) => (valor === "" ? null : valor)),
   fechaProximaITV: z
     .string()
     .refine(
@@ -52,8 +57,10 @@ export const crearVehiculoSchema = z.object({
         if (!/^\d{4}-\d{2}-\d{2}$/.test(valor)) return false;
 
         const fecha = new Date(`${valor}T00:00:00.000Z`);
-        return !Number.isNaN(fecha.getTime()) &&
-          fecha.toISOString().slice(0, 10) === valor;
+        return (
+          !Number.isNaN(fecha.getTime()) &&
+          fecha.toISOString().slice(0, 10) === valor
+        );
       },
       { message: "Introduce una fecha de ITV válida" },
     )
@@ -73,7 +80,9 @@ export const crearVehiculoSchema = z.object({
         return valor <= limite;
       },
       { message: "La próxima ITV no puede superar cuatro años desde hoy" },
-    ),
+    )
+    .transform((valor) => (valor === "" ? null : valor)),
+
   observaciones: z
     .string()
     .trim()
