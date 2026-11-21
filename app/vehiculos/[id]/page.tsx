@@ -1,5 +1,5 @@
 import { VehiculoModelo } from "@/server/models/Vehiculo";
-import { VehiculoDetail } from "@/features/vehiculos/components/VehiculoDetail";
+import { VehiculoDetail } from "@/features/vehiculos/components/vehiculos-detail/VehiculoDetail";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 
@@ -11,7 +11,11 @@ const DetalleVehiculoPage = async ({
   const { id } = await params;
   const vehiculoId = Number(id);
 
-  if (!/^[0-9]+$/.test(id) || !Number.isSafeInteger(vehiculoId) || vehiculoId <= 0) {
+  if (
+    !/^[0-9]+$/.test(id) ||
+    !Number.isSafeInteger(vehiculoId) ||
+    vehiculoId <= 0
+  ) {
     notFound();
   }
 

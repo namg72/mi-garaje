@@ -134,6 +134,14 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+@layer components {
+  /* Tarjetas de sección: superficie blanca en el tema claro, borde,
+     esquinas redondeadas, sombra suave y espaciado interior adaptable. */
+  .tarjeta-seccion {
+    @apply rounded-xl border border-border bg-card p-5 shadow-card sm:p-6;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
