@@ -12,18 +12,27 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ImageIcon } from "@phosphor-icons/react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { crearVehiculoSchema } from "../valiaciones/crearVehiculoSchema";
 import { CrearVehiculoDatos } from "../types/Vehiculo";
 import { useRouter } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const ModalCrearVehiculo = () => {
   const [abierto, setAbierto] = useState(false);
   const {
     register,
+    control,
     handleSubmit,
     reset,
     formState: { errors },
@@ -34,6 +43,7 @@ export const ModalCrearVehiculo = () => {
   >({
     resolver: zodResolver(crearVehiculoSchema),
     defaultValues: {
+      tipo: undefined,
       marca: "",
       modelo: "",
       matricula: "",
@@ -45,6 +55,15 @@ export const ModalCrearVehiculo = () => {
     },
   });
   const router = useRouter();
+
+  const items = [
+    { label: "Selecciona tipo de vehículo", value: null },
+    { label: "Coche", value: "coche" },
+    { label: "Moto", value: "moto" },
+    { label: "Furgoneta", value: "furgoneta" },
+    { label: "Camión", value: "camion" },
+    { label: "Autocaravana", value: "autocaravana" },
+  ];
 
   const handleAddVehiculo = async (vehiculo: CrearVehiculoDatos) => {
     console.log(vehiculo, 4444444444444);
@@ -96,6 +115,58 @@ export const ModalCrearVehiculo = () => {
               <div className="grid gap-2">
                 <Label
                   className="font-normal leading-snug text-muted-foreground"
+                  htmlFor="tipo"
+                >
+                  Tipo
+                  <span className="text-destructive" aria-hidden="true">
+                    *
+                  </span>
+                </Label>
+                <Controller
+                  name="tipo"
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      items={items}
+                      name={field.name}
+                      value={field.value ?? null}
+                      onValueChange={field.onChange}
+                    >
+                      <SelectTrigger
+                        id="tipo"
+                        ref={field.ref}
+                        onBlur={field.onBlur}
+                        aria-invalid={Boolean(errors.tipo)}
+                        aria-describedby={errors.tipo ? "tipo-error" : undefined}
+                        className="w-full bg-card data-[size=default]:h-11"
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          {items.map((item) => (
+                            <SelectItem key={item.value ?? "sin-tipo"} value={item.value}>
+                              {item.label}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  )}
+                />
+                {errors.tipo && (
+                  <p
+                    id="tipo-error"
+                    role="alert"
+                    className="text-sm text-destructive"
+                  >
+                    {errors.tipo.message}
+                  </p>
+                )}
+              </div>
+              <div className="grid gap-2">
+                <Label
+                  className="font-normal leading-snug text-muted-foreground"
                   htmlFor="marca"
                 >
                   Marca
@@ -122,6 +193,7 @@ export const ModalCrearVehiculo = () => {
                   </p>
                 )}
               </div>
+
               <div className="grid gap-2">
                 <Label
                   className="font-normal leading-snug text-muted-foreground"

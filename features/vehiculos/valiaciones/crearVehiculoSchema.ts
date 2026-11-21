@@ -1,6 +1,9 @@
 import { z } from "zod";
 
 export const crearVehiculoSchema = z.object({
+  tipo: z.enum(["coche", "moto", "furgoneta", "camion", "autocaravana"], {
+    error: "Selecciona un tipo de vehículo válido",
+  }),
   marca: z.string().trim().min(1, "La marca es obligatoria"),
   modelo: z.string().trim().min(1, "El modelo es obligatorio"),
   matricula: z

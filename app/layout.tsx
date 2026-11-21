@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
@@ -30,7 +31,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <Header />
         </div>
         <div className="flex flex-1">
-          <Sidebar />
+          <Suspense
+            fallback={
+              <div
+                aria-hidden="true"
+                className="w-60 shrink-0 border-r border-border bg-sidebar"
+              />
+            }
+          >
+            <Sidebar />
+          </Suspense>
           <main className="min-w-0 flex-1 p-6">{children}</main>
         </div>
       </body>

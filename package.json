@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "clean": "rm -rf .next && npm run dev",
+    "lint": "eslint",
+    "migrate": "sequelize-cli db:migrate --config server/database/config.json --migrations-path database/migrations"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
@@ -32,6 +34,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.6",
+    "sequelize-cli": "^6.6.5",
     "tailwindcss": "4.3.3",
     "typescript": "^5"
   }

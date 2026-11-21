@@ -9,9 +9,11 @@ export type Vehiculo = {
   fechaPrimeraMatriculacion?: string | null;
   observaciones?: string | null;
   foto?: string | null;
+  tipo?: string | null;
 };
 
 export type CrearVehiculoDatos = {
+  tipo: string;
   marca: string;
   modelo: string;
   matricula: string;

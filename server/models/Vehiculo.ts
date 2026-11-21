@@ -21,6 +21,7 @@ export class VehiculoModelo extends Model<
   declare fechaPrimeraMatriculacion: string | null;
   declare observaciones: string | null;
   declare foto: string | null;
+  declare tipo: string;
 }
 
 VehiculoModelo.init(
@@ -66,6 +67,10 @@ VehiculoModelo.init(
     foto: {
       type: DataTypes.TEXT,
       allowNull: true,
+    },
+    tipo: {
+      type: DataTypes.TEXT,
+      allowNull: false,
     },
   },
   {
