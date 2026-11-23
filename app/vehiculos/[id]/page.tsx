@@ -3,7 +3,7 @@ import { VehiculoDetail } from "@/features/vehiculos/components/vehiculos-detail
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 
-const DetalleVehiculoPage = async ({
+export const DetalleVehiculoPage = async ({
   params,
 }: {
   params: Promise<{ id: string }>;

@@ -7,3 +7,9 @@ export const agregarVehiculo = async (
   const vehiculoAgregado = await VehiculoModelo.create(vehiculo);
   return vehiculoAgregado;
 };
+
+export const eliminarVehiculo = async (vehiculoId: number): Promise<number> => {
+  return await VehiculoModelo.destroy({
+    where: { id: vehiculoId },
+  });
+};
