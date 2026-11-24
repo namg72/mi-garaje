@@ -14,6 +14,7 @@ export default async function Home() {
     matricula: vehiculo.matricula,
     km: vehiculo.km,
     foto: vehiculo.foto,
+    tipo: vehiculo.tipo,
   }));
 
   return <Resumen vehiculos={vehiculos} />;

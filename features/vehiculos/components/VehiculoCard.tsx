@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ConfirmarModal } from "@/components/ConfirmarModal";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 type vehiculoCardPros = {
   vehiculo: Vehiculo;
@@ -25,11 +26,40 @@ type vehiculoCardPros = {
 
 export const VehiculoCard = ({ vehiculo }: vehiculoCardPros) => {
   const [modalVisibility, setModalVisibility] = useState(false);
+  const router = useRouter();
+
+  const silueta: Record<string, string> = {
+    coche: "/imagenes/vehiculos/siluetaCoche.jpg",
+    moto: "/imagenes/vehiculos/siluetaMoto.png",
+    furgoneta: "/imagenes/vehiculos/siluetaVam.png",
+    camion: "/imagenes/vehiculos/siluetaCamion.png",
+    autocaravana: "/imagenes/vehiculos/siluetaCamper.png",
+  };
+  const handleEliminarVehiculo = async (id: number): Promise<void> => {
+    try {
+      const vehiculoEliminado = await fetch(`/api/vehiculos/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!vehiculoEliminado.ok) {
+        throw new Error("No se ha podido encotrar el vehiculo");
+      }
+
+      setModalVisibility(false);
+      router.refresh();
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <article className="relative flex min-w-0 flex-col overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-card">
       <div className="relative">
         <img
-          src={vehiculo.foto || "/imagenes/vehiculos/silueta.jpg"}
+          src={
+            vehiculo.foto ||
+            silueta[vehiculo.tipo ?? ""] ||
+            "/imagenes/vehiculos/siluetaCoche.jpg"
+          }
           alt={
             `${vehiculo.marca ?? ""} ${vehiculo.modelo ?? ""}`.trim() ||
             "Vehículo sin fotografía"
@@ -108,7 +138,7 @@ export const VehiculoCard = ({ vehiculo }: vehiculoCardPros) => {
         description={`¿Quieres eliminar ${vehiculo.marca ?? ""} ${vehiculo.modelo ?? ""}?`}
         abierto={modalVisibility}
         onOpenChange={setModalVisibility}
-        onConfirmar={() => setModalVisibility(false)}
+        onConfirmar={() => handleEliminarVehiculo(vehiculo.id)}
       />
     </article>
   );

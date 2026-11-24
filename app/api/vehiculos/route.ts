@@ -26,7 +26,7 @@ export const POST = async (request: Request) => {
 
   const payload = contenido as Record<string, unknown>;
 
-  const requeridos = ["marca", "modelo", "matricula"] as const;
+  const requeridos = ["tipo", "marca", "modelo", "matricula"] as const;
   const textos: Record<string, string> = {};
 
   for (const campo of requeridos) {
@@ -115,6 +115,7 @@ export const POST = async (request: Request) => {
   }
 
   const datos: CrearVehiculoDatos = {
+    tipo: textos.tipo,
     marca: textos.marca,
     modelo: textos.modelo,
     matricula: textos.matricula,

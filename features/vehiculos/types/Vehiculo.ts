@@ -1,5 +1,5 @@
 export type Vehiculo = {
-  id?: number;
+  id: number;
   marca?: string;
   modelo?: string;
   matricula?: string;

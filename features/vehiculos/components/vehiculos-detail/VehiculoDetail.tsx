@@ -21,6 +21,14 @@ type VehiculoDetailProps = {
 };
 
 export const VehiculoDetail = ({ vehiculo }: VehiculoDetailProps) => {
+  const silueta: Record<string, string> = {
+    coche: "/imagenes/vehiculos/siluetaCoche.jpg",
+    moto: "/imagenes/vehiculos/siluetaMoto.png",
+    furgoneta: "/imagenes/vehiculos/siluetaVam.png",
+    camion: "/imagenes/vehiculos/siluetaCamion.png",
+    autocaravana: "/imagenes/vehiculos/siluetaCamper.png",
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <Link
@@ -34,7 +42,11 @@ export const VehiculoDetail = ({ vehiculo }: VehiculoDetailProps) => {
       <header className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
         <div className="flex min-w-0 flex-col gap-5 sm:flex-row sm:items-center">
           <img
-            src={vehiculo.foto || "/imagenes/vehiculos/silueta.jpg"}
+            src={
+              vehiculo.foto ||
+              silueta[vehiculo.tipo ?? ""] ||
+              "/imagenes/vehiculos/siluetaCoche.jpg"
+            }
             alt={
               `${vehiculo.marca ?? ""} ${vehiculo.modelo ?? ""}`.trim() ||
               "Vehículo sin fotografía"
