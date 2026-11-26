@@ -1,5 +1,9 @@
-import { CrearVehiculoDatos } from "@/features/vehiculos/types/Vehiculo";
 import {
+  ActualizarVehiculoDatos,
+  CrearVehiculoDatos,
+} from "@/features/vehiculos/types/Vehiculo";
+import {
+  actualizarVehiculo,
   agregarVehiculo,
   eliminarVehiculo,
 } from "../repositorios/vehiculosRepositorio";
@@ -14,4 +18,11 @@ export const crearVehiculo = async (
 
 export const borrarVehiculo = async (idVehiculo: number): Promise<number> => {
   return eliminarVehiculo(idVehiculo);
+};
+
+export const modificarVehiculo = async (
+  idVehiculo: number,
+  datos: ActualizarVehiculoDatos,
+): Promise<number> => {
+  return actualizarVehiculo(idVehiculo, datos);
 };

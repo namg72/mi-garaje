@@ -24,3 +24,15 @@ export type CrearVehiculoDatos = {
   observaciones?: string | null;
   foto?: string | null;
 };
+export type ActualizarVehiculoDatos = {
+  tipo?: string;
+  marca?: string;
+  modelo?: string;
+  matricula?: string;
+  km?: number | null;
+  fechaProximaITV?: string | null;
+  bastidor?: string | null;
+  fechaPrimeraMatriculacion?: string | null;
+  observaciones?: string | null;
+  foto?: string | null;
+};

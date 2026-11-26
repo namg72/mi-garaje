@@ -57,7 +57,7 @@ export const ModalVehiculo = ({ mode, vehiculo }: ModalVehiculoProps) => {
     control,
     handleSubmit,
     reset,
-    formState: { errors, isDirty, isSubmitting },
+    formState: { errors, isDirty, isSubmitting, isValid },
   } = useForm<
     z.input<typeof crearVehiculoSchema>,
     unknown,
@@ -65,7 +65,9 @@ export const ModalVehiculo = ({ mode, vehiculo }: ModalVehiculoProps) => {
   >({
     resolver: zodResolver(crearVehiculoSchema),
     defaultValues: valoresIniciales,
+    mode: "onChange",
   });
+
   const router = useRouter();
 
   const items = [
@@ -477,7 +479,9 @@ export const ModalVehiculo = ({ mode, vehiculo }: ModalVehiculoProps) => {
             <Button
               type="submit"
               className="h-10 px-5 hover:bg-primary-hover"
-              disabled={isSubmitting || (mode == "editar" && !isDirty)}
+              disabled={
+                isSubmitting || !isValid || (mode === "editar" && !isDirty)
+              }
             >
               Guardar
             </Button>
