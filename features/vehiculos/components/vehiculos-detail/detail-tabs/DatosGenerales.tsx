@@ -91,10 +91,6 @@ export const DatosGenerales = ({ vehiculo }: DatosGeneralesProps) => {
       <div className="tarjeta-seccion flex flex-col">
         <div className="flex justify-between">
           <p className=" text-lg font-bold">Comentarios</p>
-          <div className="flex gap-2">
-            <PencilSimpleLineIcon aria-hidden="true" className="text-primary" />
-            <p className="text-primary">Editar</p>
-          </div>
         </div>
         <div className="mt-6">
           <Textarea value={vehiculo.observaciones ?? ""} readOnly />

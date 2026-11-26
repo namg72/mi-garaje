@@ -57,7 +57,7 @@ export const ModalVehiculo = ({ mode, vehiculo }: ModalVehiculoProps) => {
     control,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty, isSubmitting },
   } = useForm<
     z.input<typeof crearVehiculoSchema>,
     unknown,
@@ -144,9 +144,11 @@ export const ModalVehiculo = ({ mode, vehiculo }: ModalVehiculoProps) => {
           <Button
             type="button"
             variant={mode === "editar" ? "outline" : "default"}
-            className={mode === "editar"
-              ? "h-11 border-primary/40 bg-card px-4 text-primary hover:bg-accent hover:text-primary"
-              : "shadow-card hover:bg-primary-hover"}
+            className={
+              mode === "editar"
+                ? "h-11 border-primary/40 bg-card px-4 text-primary hover:bg-accent hover:text-primary"
+                : "shadow-card hover:bg-primary-hover"
+            }
           />
         }
       >
@@ -472,7 +474,11 @@ export const ModalVehiculo = ({ mode, vehiculo }: ModalVehiculoProps) => {
                 </Button>
               }
             />
-            <Button type="submit" className="h-10 px-5 hover:bg-primary-hover">
+            <Button
+              type="submit"
+              className="h-10 px-5 hover:bg-primary-hover"
+              disabled={isSubmitting || (mode == "editar" && !isDirty)}
+            >
               Guardar
             </Button>
           </DialogFooter>

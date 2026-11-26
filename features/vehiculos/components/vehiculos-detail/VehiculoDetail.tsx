@@ -83,15 +83,6 @@ export const VehiculoDetail = ({ vehiculo }: VehiculoDetailProps) => {
           </div>
         </div>
         <div className="flex shrink-0 flex-wrap gap-3">
-          {/*    <Button
-            type="button"
-            variant="outline"
-            className="h-11 border-primary/40 bg-card px-4 text-primary hover:bg-accent hover:text-primary"
-          >
-            <PencilSimpleLineIcon aria-hidden="true" />
-            Editar vehículo
-          </Button> */}
-
           <ModalVehiculo mode="editar" vehiculo={vehiculo} />
 
           <Button type="button" className="h-11 px-4 hover:bg-primary-hover">
