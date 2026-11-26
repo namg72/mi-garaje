@@ -19,6 +19,7 @@ import {
 import { ConfirmarModal } from "@/components/ConfirmarModal";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "@/components/ui/toast";
 
 type vehiculoCardPros = {
   vehiculo: Vehiculo;
@@ -47,6 +48,7 @@ export const VehiculoCard = ({ vehiculo }: vehiculoCardPros) => {
 
       setModalVisibility(false);
       router.refresh();
+      toast.add({ title: "Vehículo eliminado correctamente", type: "success" });
     } catch (error) {
       console.log(error);
     }

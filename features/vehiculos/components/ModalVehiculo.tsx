@@ -11,14 +11,15 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ImageIcon } from "@phosphor-icons/react";
+import { ImageIcon, PencilSimpleLineIcon } from "@phosphor-icons/react";
 import { Controller, useForm } from "react-hook-form";
 import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { crearVehiculoSchema } from "../valiaciones/crearVehiculoSchema";
-import { CrearVehiculoDatos } from "../types/Vehiculo";
+import { CrearVehiculoDatos, Vehiculo } from "../types/Vehiculo";
 import { useRouter } from "next/navigation";
+import { toast } from "@/components/ui/toast";
 import {
   Select,
   SelectContent,
@@ -28,7 +29,28 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-export const ModalCrearVehiculo = () => {
+type ModalVehiculoProps = {
+  mode: "crear" | "editar";
+  vehiculo?: Vehiculo;
+};
+
+export const ModalVehiculo = ({ mode, vehiculo }: ModalVehiculoProps) => {
+  const datosIniciales = mode === "editar" ? vehiculo : undefined;
+  const tipoValidado = crearVehiculoSchema.shape.tipo.safeParse(
+    datosIniciales?.tipo,
+  );
+  const valoresIniciales = {
+    tipo: tipoValidado.success ? tipoValidado.data : undefined,
+    marca: datosIniciales?.marca ?? "",
+    modelo: datosIniciales?.modelo ?? "",
+    matricula: datosIniciales?.matricula ?? "",
+    km: datosIniciales?.km?.toString() ?? "",
+    bastidor: datosIniciales?.bastidor ?? "",
+    fechaPrimeraMatriculacion: datosIniciales?.fechaPrimeraMatriculacion ?? "",
+    fechaProximaITV: datosIniciales?.fechaProximaITV ?? "",
+    observaciones: datosIniciales?.observaciones ?? "",
+  };
+
   const [abierto, setAbierto] = useState(false);
   const {
     register,
@@ -42,17 +64,7 @@ export const ModalCrearVehiculo = () => {
     z.output<typeof crearVehiculoSchema>
   >({
     resolver: zodResolver(crearVehiculoSchema),
-    defaultValues: {
-      tipo: undefined,
-      marca: "",
-      modelo: "",
-      matricula: "",
-      km: "",
-      bastidor: "",
-      fechaPrimeraMatriculacion: "",
-      fechaProximaITV: "",
-      observaciones: "",
-    },
+    defaultValues: valoresIniciales,
   });
   const router = useRouter();
 
@@ -65,23 +77,57 @@ export const ModalCrearVehiculo = () => {
     { label: "Autocaravana", value: "autocaravana" },
   ];
 
-  const handleAddVehiculo = async (vehiculo: CrearVehiculoDatos) => {
-    console.log(vehiculo, 4444444444444);
-    if (vehiculo) {
-      const respuesta = await fetch("/api/vehiculos", {
-        method: "POST",
+  const modaltitle = mode === "crear" ? "Añadir Vehiculo" : "Editar vehiculo";
+
+  const guardarVehiculo = async (datos: CrearVehiculoDatos) => {
+    try {
+      if (
+        mode === "editar" &&
+        (!vehiculo?.id ||
+          !Number.isSafeInteger(vehiculo.id) ||
+          vehiculo.id <= 0)
+      ) {
+        throw new Error(
+          "No se ha podido identificar el vehículo que quieres editar",
+        );
+      }
+
+      const url =
+        mode === "crear" ? "/api/vehiculos" : `/api/vehiculos/${vehiculo!.id}`;
+      const respuesta = await fetch(url, {
+        method: mode === "crear" ? "POST" : "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(vehiculo),
+        body: JSON.stringify(datos),
       });
+
       if (!respuesta.ok) {
-        throw new Error("No se ha podidao guardar el vehiculo");
+        throw new Error(
+          mode === "crear"
+            ? "No se ha podido crear el vehículo"
+            : "No se ha podido actualizar el vehículo",
+        );
       }
 
       reset();
       setAbierto(false);
       router.refresh();
+      toast.add({
+        title:
+          mode === "crear"
+            ? "Vehículo creado correctamente"
+            : "Vehículo actualizado correctamente",
+        type: "success",
+      });
+    } catch (error) {
+      toast.add({
+        title:
+          error instanceof Error
+            ? error.message
+            : "No se ha podido guardar el vehículo",
+        type: "error",
+      });
     }
   };
 
@@ -90,26 +136,30 @@ export const ModalCrearVehiculo = () => {
       open={abierto}
       onOpenChange={(nuevoEstado) => {
         setAbierto(nuevoEstado);
-        if (!nuevoEstado) reset();
+        reset(valoresIniciales);
       }}
     >
       <DialogTrigger
-        render={<Button className="shadow-card hover:bg-primary-hover" />}
+        render={
+          <Button
+            type="button"
+            variant={mode === "editar" ? "outline" : "default"}
+            className={mode === "editar"
+              ? "h-11 border-primary/40 bg-card px-4 text-primary hover:bg-accent hover:text-primary"
+              : "shadow-card hover:bg-primary-hover"}
+          />
+        }
       >
-        Añadir vehículo
+        {mode === "editar" && <PencilSimpleLineIcon aria-hidden="true" />}
+        {modaltitle}
       </DialogTrigger>
       <DialogContent className="max-h-[90dvh] w-[95vw] gap-0 overflow-y-auto p-0 sm:max-w-4xl">
         <DialogHeader className="border-b border-border px-6 py-6 sm:px-8">
           <DialogTitle className="text-2xl font-semibold tracking-tight text-primary">
-            Añadir vehículo
+            {modaltitle}
           </DialogTitle>
         </DialogHeader>
-        <form
-          noValidate
-          onSubmit={handleSubmit((datos) => {
-            handleAddVehiculo(datos);
-          })}
-        >
+        <form noValidate onSubmit={handleSubmit(guardarVehiculo)}>
           <div className="grid gap-8 p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_220px]">
             <div className="grid grid-cols-1 items-start gap-x-6 gap-y-5 sm:grid-cols-2">
               <div className="grid gap-2">
@@ -137,7 +187,9 @@ export const ModalCrearVehiculo = () => {
                         ref={field.ref}
                         onBlur={field.onBlur}
                         aria-invalid={Boolean(errors.tipo)}
-                        aria-describedby={errors.tipo ? "tipo-error" : undefined}
+                        aria-describedby={
+                          errors.tipo ? "tipo-error" : undefined
+                        }
                         className="w-full bg-card data-[size=default]:h-11"
                       >
                         <SelectValue />
@@ -145,7 +197,10 @@ export const ModalCrearVehiculo = () => {
                       <SelectContent>
                         <SelectGroup>
                           {items.map((item) => (
-                            <SelectItem key={item.value ?? "sin-tipo"} value={item.value}>
+                            <SelectItem
+                              key={item.value ?? "sin-tipo"}
+                              value={item.value}
+                            >
                               {item.label}
                             </SelectItem>
                           ))}

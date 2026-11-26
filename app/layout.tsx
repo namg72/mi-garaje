@@ -4,6 +4,7 @@ import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { Toaster } from "@/components/ui/toast";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -43,6 +44,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </Suspense>
           <main className="min-w-0 flex-1 p-6">{children}</main>
         </div>
+        <Toaster timeout={3000} />
       </body>
     </html>
   );
