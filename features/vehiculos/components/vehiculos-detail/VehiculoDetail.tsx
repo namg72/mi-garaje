@@ -12,20 +12,12 @@ import { Mantenimiento } from "./detail-tabs/Mantenimiento";
 import { Historial } from "./detail-tabs/Historial";
 import { Documentos } from "./detail-tabs/Documentos";
 import { ModalVehiculo } from "../ModalVehiculo";
-import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
-import { crearVehiculoSchema } from "../../valiaciones/crearVehiculoSchema";
-import z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { toast } from "@/components/ui/toast"
+import { useActualizarKilometraje } from "../../hooks/useAcutalizarKIlometraje";
 
 type VehiculoDetailProps = {
   vehiculo: Vehiculo;
 };
-
-const actualizarKmSchema = crearVehiculoSchema.pick({ km: true });
 
 export const VehiculoDetail = ({ vehiculo }: VehiculoDetailProps) => {
   const silueta: Record<string, string> = {
@@ -36,57 +28,15 @@ export const VehiculoDetail = ({ vehiculo }: VehiculoDetailProps) => {
     autocaravana: "/imagenes/vehiculos/siluetaCamper.png",
   };
 
-  const [kmActualizandose, setKmActualizandose] = useState<boolean>(false);
-  const router = useRouter();
   const {
+    kmActualizandose,
+    setKmActualizandose,
+    guardarKm,
+    handleEditKm,
     register,
     handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<
-    z.input<typeof actualizarKmSchema>,
-    unknown,
-    z.output<typeof actualizarKmSchema>
-  >({
-    resolver: zodResolver(actualizarKmSchema),
-    mode: "onChange",
-    defaultValues: {
-      km: vehiculo.km?.toString() ?? "",
-    },
-  });
-  const handleEditKm = () => {
-    setKmActualizandose(false);
-  };
-  const guardarKm = async (datos: z.output<typeof actualizarKmSchema>) => {
-    try {
-      const respuesta = await fetch(`/api/vehiculos/${vehiculo.id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(datos),
-      });
-
-      if (!respuesta.ok) {
-        throw new Error("No se ha podido actualizar el kilometraje");
-      }
-
-      reset({ km: datos.km?.toString() ?? "" });
-      setKmActualizandose(false);
-      router.refresh();
-      toast.add({
-        title: "Kilometraje actualizado correctamente",
-        type: "success",
-      });
-    } catch (error) {
-      toast.add({
-        title: error instanceof Error
-          ? error.message
-          : "No se ha podido actualizar el kilometraje",
-        type: "error",
-      });
-    }
-  };
+    errors,
+  } = useActualizarKilometraje(vehiculo);
 
   return (
     <div className="flex flex-col gap-6">
